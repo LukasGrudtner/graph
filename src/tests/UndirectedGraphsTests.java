@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import graph.DirectedGraph;
 import graph.Graph;
 import graph.UndirectedGraph;
+import vertex.DGVertex;
 import vertex.UGVertex;
 import vertex.Vertex;
 
@@ -151,5 +152,36 @@ public class UndirectedGraphsTests {
 		graph.connect(v1, v1);
 		
 		assertEquals(2, ((UndirectedGraph) graph).degree(v1));
+	}
+	
+	@org.junit.Test
+	public void connectivity() {
+		Graph graph = new UndirectedGraph();
+		
+		Vertex v1 = new UGVertex("Vertex One");
+		Vertex v2 = new UGVertex("Vertex Two");
+		Vertex v3 = new UGVertex("Vertex Three");
+		
+		graph.addVertex(v1);
+		graph.addVertex(v2);
+		graph.addVertex(v3);
+		
+		graph.connect(v1, v2);
+		assertEquals(false, graph.isConnected());
+		
+		graph.connect(v2, v3);
+		assertEquals(true, graph.isConnected());
+		
+		graph.removeVertex(v2);
+		assertEquals(false, graph.isConnected());
+	}
+	
+	@org.junit.Test
+	public void connectivitySingleVertex() {
+		Graph graph = new UndirectedGraph();
+		Vertex v1 = new UGVertex("Vertex One");
+		graph.addVertex(v1);
+		
+		assertEquals(true, graph.isConnected());
 	}
 }

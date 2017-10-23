@@ -80,10 +80,55 @@ public class UndirectedGraph extends Graph {
 		return true;
 	}
 	
-	public boolean isTree() {
+	@Override
+	public boolean isConnected() {
+		HashSet<Vertex> set = new HashSet<Vertex>();
+		Vertex vertex = oneVertex();
 		
-		// TODO Implementar
-		return true;
+		return (isThisGraphConnected(vertex, set).size() == order());
 	}
 	
+	private HashSet<Vertex> isThisGraphConnected(Vertex v, HashSet<Vertex> set) {
+		Iterator<Vertex> iterator = ((UGVertex) v).getNeighborhood().iterator();
+		Vertex vertex;
+		
+		set.add(v);
+		
+		while (iterator.hasNext()) {
+			vertex = (UGVertex) iterator.next();
+			
+			if (!set.contains(vertex))
+				isThisGraphConnected(vertex, set);
+		}
+		
+		return set;
+	}
+	
+	public boolean isTree() {
+		
+		HashSet<Vertex> set = new HashSet<Vertex>();
+		Vertex v = oneVertex();
+		
+		return isThereCycle(v, null, set) && isConnected();
+	}
+	
+	private boolean isThereCycle (Vertex v, Vertex previous, HashSet<Vertex> set) {
+		Iterator<Vertex> iterator = ((UGVertex) v).getNeighborhood().iterator();
+		Vertex vertex;
+		
+		if (set.contains(v))
+			return true;
+		
+		set.add(v);
+		
+		while (iterator.hasNext()) {
+			vertex = (UGVertex) iterator.next();
+			
+			if (!vertex.equals(previous))
+				if (isThereCycle(vertex, v, set))
+					return true;
+			
+		}
+		return false;
+	}
 }

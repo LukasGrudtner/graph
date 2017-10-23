@@ -308,4 +308,46 @@ public class DirectedGraphsTests {
 		assertEquals(true, DTC_v7.contains(v7));
 		assertEquals(8, DTC_v7.size());
 	}
+	
+	@org.junit.Test
+	public void connectivity() {
+		Graph graph = new DirectedGraph();
+		
+		Vertex v1 = new DGVertex("Vertex One");
+		Vertex v2 = new DGVertex("Vertex Two");
+		Vertex v3 = new DGVertex("Vertex Three");
+		
+		graph.addVertex(v1);
+		graph.addVertex(v2);
+		graph.addVertex(v3);
+		
+		graph.connect(v1, v2);
+		assertEquals(false, graph.isConnected());
+		
+		graph.connect(v2, v3);
+		assertEquals(true, graph.isConnected());
+		
+		graph.removeVertex(v2);
+		assertEquals(false, graph.isConnected());
+	}
+	
+	@org.junit.Test
+	public void connectivitySingleVertex() {
+		Graph graph = new DirectedGraph();
+		Vertex v1 = new DGVertex("Vertex One");
+		graph.addVertex(v1);
+		
+		assertEquals(true, graph.isConnected());
+	}
+	
+	@org.junit.Test
+	public void completenessSingleVertex() {
+		Graph graph = new DirectedGraph();
+		Vertex v1 = new DGVertex("Vertex One");
+		graph.addVertex(v1);
+		
+		assertEquals(true, graph.isComplete());
+	}
+	
+	
 }

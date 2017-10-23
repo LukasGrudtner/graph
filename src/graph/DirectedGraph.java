@@ -142,6 +142,18 @@ public class DirectedGraph extends Graph {
 		
 		return indirectTransitiveClosure;
 	}
+
+	@Override
+	public boolean isConnected() {
+		HashSet<Vertex> allVerticesSet = new HashSet<Vertex>();
+		Vertex vertex = oneVertex();
+		
+		DTC(vertex, allVerticesSet);
+		ITC(vertex, allVerticesSet);
+		
+		return (allVerticesSet.size() == vertices.size());
+	}
+	
 	
 
 }

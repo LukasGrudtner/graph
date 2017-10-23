@@ -55,11 +55,7 @@ public abstract class Graph {
 	/* Complexidade: n */
 	public abstract boolean isComplete();
 	
-	public boolean isConnected() {
-		
-		/* TODO Implementar */
-		return true;
-	}
+	public abstract boolean isConnected();
 
 	
 	
