@@ -1,18 +1,32 @@
 
 public class Vertex {
 	
-	private String name;
+	private Object data;
+	private int degree;
 	
-	public Vertex(String name) {
-		this.name = name;
+	public Vertex(Object data) {
+		this.data = data;
+		this.degree = 0;
 	}
 	
-	public String getName() {
-		return name;
+	public Object getData() {
+		return data;
 	}
 	
-	public void setName() {
-		this.name = name;
+	public void setData(Object data) {
+		this.data = data;
+	}
+	
+	public int getDegree() {
+		return degree;
+	}
+	
+	public void incDegree() {
+		degree++;
+	}
+	
+	public void decDegree() {
+		degree--;
 	}
 
 }
