@@ -1,3 +1,4 @@
+package graph;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -25,7 +26,7 @@ public class UndirectedGraph extends Graph {
 		return edges.add(edge1) && edges.add(edge2);
 	}
 	
-	public boolean desconnect(Vertex v1, Vertex v2) {
+	public boolean disconnect(Vertex v1, Vertex v2) {
 		Edge edge1 = new Edge(v1, v2);
 		Edge edge2 = new Edge(v2, v1);
 		
@@ -42,6 +43,10 @@ public class UndirectedGraph extends Graph {
 	
 	public HashSet<Vertex> neighborhood(Vertex v) {
 		return ((UGVertex) v).getNeighborhood();
+	}
+	
+	public int degree(Vertex v) {
+		return ((UGVertex) v).getDegree();
 	}
 	
 	public boolean isRegular() {

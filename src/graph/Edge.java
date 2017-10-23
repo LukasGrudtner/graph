@@ -1,3 +1,4 @@
+package graph;
 import vertex.Vertex;
 
 public class Edge {

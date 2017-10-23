@@ -1,3 +1,4 @@
+package graph;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -26,7 +27,7 @@ public class DirectedGraph extends Graph {
 	}
 
 	@Override
-	public boolean desconnect(Vertex v1, Vertex v2) {
+	public boolean disconnect(Vertex v1, Vertex v2) {
 		Edge edge = new Edge(v1, v2);
 		
 		/* Decrementa grau de emissão de v1 e remove v2 como sucessor. */
@@ -48,6 +49,14 @@ public class DirectedGraph extends Graph {
 	/* Sucessores */
 	public HashSet<Vertex> successors(Vertex v) {
 		return ((DGVertex) v).getSuccessors();
+	}
+	
+	public int indegree(Vertex v) {
+		return ((DGVertex) v).getIndegree();
+	}
+	
+	public int outdegree(Vertex v) {
+		return ((DGVertex) v).getOutdegree();
 	}
 
 	@Override
@@ -80,8 +89,9 @@ public class DirectedGraph extends Graph {
 			vertex = (DGVertex) iterator.next();
 			
 			if ((vertex.getIndegree() != (vertices.size()-1)) ||
-					(vertex.getOutdegree() != (vertices.size()-1)))
+					(vertex.getOutdegree() != (vertices.size()-1))) 
 				return false;
+			
 		}
 		
 		return true;

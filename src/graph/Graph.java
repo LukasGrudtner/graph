@@ -1,3 +1,4 @@
+package graph;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -27,7 +28,7 @@ public abstract class Graph {
 	
 	public abstract boolean connect(Vertex v1, Vertex v2);
 	
-	public abstract boolean desconnect(Vertex v1, Vertex v2);
+	public abstract boolean disconnect(Vertex v1, Vertex v2);
 	
 	public int order() {
 		return vertices.size();
