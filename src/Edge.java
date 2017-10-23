@@ -1,3 +1,4 @@
+import vertex.Vertex;
 
 public class Edge {
 	

@@ -1,6 +1,8 @@
 import java.util.HashSet;
 import java.util.Iterator;
 
+import vertex.Vertex;
+
 public abstract class Graph {
 	
 	protected HashSet<Vertex> vertices;
@@ -10,6 +12,10 @@ public abstract class Graph {
 		vertices = new HashSet<Vertex>();
 		edges = new HashSet<Edge>();
 	}
+	
+	/*
+	 * Ações básicas
+	 */
 	
 	public boolean addVertex(Vertex v) {
 		return vertices.add(v);
@@ -39,6 +45,27 @@ public abstract class Graph {
 	public int degree(Vertex v) {
 		return v.getDegree();
 	}
+	
+	/*
+	 * Ações derivadas
+	 */
+	
+	/* Verifica se todos os vértices tem o mesmo grau. */
+	/* Complexidade: n */
+	public abstract boolean isRegular();
+	
+	/* Verifica se cada vértice de G está conectados a todos os outros vértices. */
+	/* Complexidade: n */
+	public abstract boolean isComplete();
+	
+	public boolean isConnected() {
+		
+		/* TODO Implementar */
+		return true;
+	}
+
+	
+	
 	
 	
 
