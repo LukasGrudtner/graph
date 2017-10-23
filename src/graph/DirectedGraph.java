@@ -88,10 +88,10 @@ public class DirectedGraph extends Graph {
 	
 	public HashSet<Vertex> directTrasitiveClosure(Vertex v) {
 		HashSet<Vertex> markedVertices = new HashSet<Vertex>();
-		return DTC(v, markedVertices);
+		return searchDirectTransitiveClosure(v, markedVertices);
 	}
 	
-	private HashSet<Vertex> DTC(Vertex v, HashSet<Vertex> markedVertices) {
+	private HashSet<Vertex> searchDirectTransitiveClosure(Vertex v, HashSet<Vertex> markedVertices) {
 		Iterator<Vertex> iterator = ((DGVertex) v).successors().iterator();
 		Vertex vertex;
 
@@ -101,17 +101,17 @@ public class DirectedGraph extends Graph {
 			vertex = (DGVertex) iterator.next();
 			
 			if (!markedVertices.contains(vertex))
-				DTC(vertex, markedVertices);
+				searchDirectTransitiveClosure(vertex, markedVertices);
 		}
 		return markedVertices;
 	}
 	
 	public HashSet<Vertex> indirectTransitiveClosure(Vertex v) {
 		HashSet<Vertex> markedVertices = new HashSet<Vertex>();
-		return ITC(v, markedVertices);
+		return searchIndirectTransitiveClosure(v, markedVertices);
 	}
 	
-	private HashSet<Vertex> ITC(Vertex v, HashSet<Vertex> markedVertices) {
+	private HashSet<Vertex> searchIndirectTransitiveClosure(Vertex v, HashSet<Vertex> markedVertices) {
 		Iterator<Vertex> iterator = ((DGVertex) v).predecessors().iterator();
 		Vertex vertex;
 		
@@ -121,7 +121,7 @@ public class DirectedGraph extends Graph {
 			vertex = (DGVertex) iterator.next();
 			
 			if (!markedVertices.contains(vertex))
-				ITC(vertex, markedVertices);
+				searchIndirectTransitiveClosure(vertex, markedVertices);
 		}
 		return markedVertices;
 	}
@@ -131,8 +131,8 @@ public class DirectedGraph extends Graph {
 		HashSet<Vertex> allVerticesSet = new HashSet<Vertex>();
 		Vertex vertex = oneVertex();
 		
-		DTC(vertex, allVerticesSet);
-		ITC(vertex, allVerticesSet);
+		searchDirectTransitiveClosure(vertex, allVerticesSet);
+		searchIndirectTransitiveClosure(vertex, allVerticesSet);
 		
 		return (allVerticesSet.size() == vertices.size());
 	}

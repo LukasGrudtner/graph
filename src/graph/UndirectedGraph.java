@@ -58,7 +58,6 @@ public class UndirectedGraph extends Graph {
 	
 	public boolean isComplete() {
 		Iterator<Vertex> iterator = vertices.iterator();
-		
 		UGVertex vertex;
 		
 		while (iterator.hasNext()) {
@@ -70,12 +69,32 @@ public class UndirectedGraph extends Graph {
 		return true;
 	}
 	
+	public HashSet<Vertex> transitiveClosure(Vertex v) {
+		HashSet<Vertex> markedVertices = new HashSet<Vertex>();
+		return searchTransitiveClosure(v, markedVertices);
+	}
+	
+	private HashSet<Vertex> searchTransitiveClosure(Vertex v, HashSet<Vertex> markedVertices) {
+		Iterator<Vertex> iterator = ((UGVertex) v).neighborhood().iterator();
+		UGVertex vertex;
+		
+		markedVertices.add(v);
+		
+		while (iterator.hasNext()) {
+			vertex = (UGVertex) iterator.next();
+			
+			if (!markedVertices.contains(vertex))
+				searchTransitiveClosure(vertex, markedVertices);
+		}
+		return markedVertices;
+	}
+	
 	@Override
 	public boolean isConnected() {
-		HashSet<Vertex> set = new HashSet<Vertex>();
-		Vertex vertex = oneVertex();
+		HashSet<Vertex> markedVertices = new HashSet<Vertex>();
+		Vertex v = oneVertex();
 		
-		return (checkConnectivity(vertex, set).size() == order());
+		return vertices.equals(transitiveClosure(v));
 	}
 	
 	private HashSet<Vertex> checkConnectivity(Vertex v, HashSet<Vertex> markedVertices) {
