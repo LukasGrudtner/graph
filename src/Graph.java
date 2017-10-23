@@ -42,10 +42,6 @@ public abstract class Graph {
 		return iterator.next();
 	}
 	
-	public int degree(Vertex v) {
-		return v.getDegree();
-	}
-	
 	/*
 	 * Ações derivadas
 	 */

@@ -1,5 +1,7 @@
 import java.util.HashSet;
+import java.util.Iterator;
 
+import vertex.DGVertex;
 import vertex.Vertex;
 
 public class DirectedGraph extends Graph {
@@ -12,13 +14,13 @@ public class DirectedGraph extends Graph {
 	public boolean connect(Vertex v1, Vertex v2) {
 		Edge edge = new Edge(v1, v2);
 		
-		/* Incrementa grau de v1 e adiciona v2 como sucessor. */
-		v1.incDegree();
-		v1.addOutdegreeVertex(v2);
+		/* Incrementa grau de emissão de v1 e adiciona v2 como sucessor. */
+		((DGVertex) v1).incOutdegree();
+		((DGVertex) v1).addSuccessor(v2);
 		
-		/* Incrementa grau de v2 e adiciona v1 como antecessor. */
-		v2.incDegree();
-		v2.addIndegreeVertex(v1);
+		/* Incrementa grau de recepção de v2 e adiciona v1 como antecessor. */
+		((DGVertex) v2).incIndegree();
+		((DGVertex) v2).addPredecessor(v1);
 		
 		return edges.add(edge);
 	}
@@ -27,37 +29,62 @@ public class DirectedGraph extends Graph {
 	public boolean desconnect(Vertex v1, Vertex v2) {
 		Edge edge = new Edge(v1, v2);
 		
-		/* Decrementa grau de v1 e remove v2 como sucessor. */
-		v1.decDegree();
-		v1.removeOutdegreeVertex(v2);
+		/* Decrementa grau de emissão de v1 e remove v2 como sucessor. */
+		((DGVertex) v1).decOutdegree();
+		((DGVertex) v1).removeSuccessor(v2);
 		
-		/* Decrementa grau de v2 e remove v1 como antecessor. */
-		v2.decDegree();
-		v2.removeOutdegreeVertex(v1);
+		/* Decrementa grau de recepção de v2 e remove v1 como antecessor. */
+		((DGVertex) v2).decIndegree();
+		((DGVertex) v2).removePredecessor(v1);
 		
 		return edges.remove(edge);
 	}
 	
 	/* Antecessores */
-	public HashSet<Vertex> indegree(Vertex v) {
-		return v.getIndegree();
+	public HashSet<Vertex> predecessors(Vertex v) {
+		return ((DGVertex) v).getPredecessors();
 	}
 	
 	/* Sucessores */
-	public HashSet<Vertex> outdegree(Vertex v) {
-		return v.getOutdegree();
+	public HashSet<Vertex> successors(Vertex v) {
+		return ((DGVertex) v).getSuccessors();
 	}
 
 	@Override
 	public boolean isRegular() {
-		// TODO Implementar
-		return false;
+		Iterator<Vertex> iterator = vertices.iterator();
+		
+		DGVertex vertex = (DGVertex) this.oneVertex();
+		int indegree = vertex.getIndegree();
+		int outdegree = vertex.getOutdegree();
+		
+		while (iterator.hasNext()) {
+			vertex = (DGVertex) iterator.next();
+			
+			if ((vertex.getIndegree() != indegree) ||
+					(vertex.getOutdegree() != outdegree)) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	@Override
 	public boolean isComplete() {
-		// TODO Implementar
-		return false;
+		Iterator<Vertex> iterator = vertices.iterator();
+		
+		DGVertex vertex;
+		
+		while (iterator.hasNext()) {
+			vertex = (DGVertex) iterator.next();
+			
+			if ((vertex.getIndegree() != (vertices.size()-1)) ||
+					(vertex.getOutdegree() != (vertices.size()-1)))
+				return false;
+		}
+		
+		return true;
 	}
 	
 	public HashSet<Vertex> getDirectTrasitiveClosure() {
