@@ -7,28 +7,26 @@ import vertex.Vertex;
 public abstract class Graph {
 	
 	protected HashSet<Vertex> vertices;
-	protected HashSet<Edge> edges;
 	
 	public Graph() {
 		vertices = new HashSet<Vertex>();
-		edges = new HashSet<Edge>();
 	}
 	
 	/*
 	 * Ações básicas
 	 */
 	
-	public boolean addVertex(Vertex v) {
-		return vertices.add(v);
+	public void addVertex(Vertex v) {
+		vertices.add(v);
 	}
 	
-	public boolean removeVertex(Vertex v) {
-		return vertices.remove(v);
+	public void removeVertex(Vertex v) {
+		vertices.remove(v);
 	}
 	
-	public abstract boolean connect(Vertex v1, Vertex v2);
+	public abstract void connect(Vertex v1, Vertex v2);
 	
-	public abstract boolean disconnect(Vertex v1, Vertex v2);
+	public abstract void disconnect(Vertex v1, Vertex v2);
 	
 	public int order() {
 		return vertices.size();

@@ -11,10 +11,8 @@ public class UndirectedGraph extends Graph {
 		super();
 	}
 	
-	public boolean connect(Vertex v1, Vertex v2) {
-		Edge edge1 = new Edge(v1, v2);
-		Edge edge2 = new Edge(v2, v1);
-		
+	public void connect(Vertex v1, Vertex v2) {
+	
 		/* Incrementa grau de v1 e adiciona v2 como adjacente. */
 		((UGVertex) v1).incDegree();
 		((UGVertex) v1).addNeighbor(v2);
@@ -22,13 +20,9 @@ public class UndirectedGraph extends Graph {
 		/* Incrementa grau de v2 e adiciona v1 como adjacente. */
 		((UGVertex) v2).incDegree();
 		((UGVertex) v2).addNeighbor(v1);
-		
-		return edges.add(edge1) && edges.add(edge2);
 	}
 	
-	public boolean disconnect(Vertex v1, Vertex v2) {
-		Edge edge1 = new Edge(v1, v2);
-		Edge edge2 = new Edge(v2, v1);
+	public void disconnect(Vertex v1, Vertex v2) {
 		
 		/* Decrementa grau de v1 e remove v2 como adjacente. */
 		((UGVertex) v1).decDegree();
@@ -37,8 +31,6 @@ public class UndirectedGraph extends Graph {
 		/* Decrementa grau de v2 e remove v1 como adjacente. */
 		((UGVertex) v2).decDegree();
 		((UGVertex) v2).removeNeighbor(v1);
-		
-		return edges.remove(edge1) && edges.remove(edge2);
 	}
 	
 	public HashSet<Vertex> neighborhood(Vertex v) {

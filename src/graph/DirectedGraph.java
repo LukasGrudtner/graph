@@ -12,8 +12,7 @@ public class DirectedGraph extends Graph {
 	}
 
 	@Override
-	public boolean connect(Vertex v1, Vertex v2) {
-		Edge edge = new Edge(v1, v2);
+	public void connect(Vertex v1, Vertex v2) {
 		
 		/* Incrementa grau de emissão de v1 e adiciona v2 como sucessor. */
 		((DGVertex) v1).incOutdegree();
@@ -22,13 +21,10 @@ public class DirectedGraph extends Graph {
 		/* Incrementa grau de recepção de v2 e adiciona v1 como antecessor. */
 		((DGVertex) v2).incIndegree();
 		((DGVertex) v2).addPredecessor(v1);
-		
-		return edges.add(edge);
 	}
 
 	@Override
-	public boolean disconnect(Vertex v1, Vertex v2) {
-		Edge edge = new Edge(v1, v2);
+	public void disconnect(Vertex v1, Vertex v2) {
 		
 		/* Decrementa grau de emissão de v1 e remove v2 como sucessor. */
 		((DGVertex) v1).decOutdegree();
@@ -37,8 +33,6 @@ public class DirectedGraph extends Graph {
 		/* Decrementa grau de recepção de v2 e remove v1 como antecessor. */
 		((DGVertex) v2).decIndegree();
 		((DGVertex) v2).removePredecessor(v1);
-		
-		return edges.remove(edge);
 	}
 	
 	public HashSet<Vertex> predecessors(Vertex v) {
