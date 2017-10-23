@@ -97,10 +97,44 @@ public class DirectedGraph extends Graph {
 		return true;
 	}
 	
-	public HashSet<Vertex> getDirectTrasitiveClosure() {
+	public HashSet<Vertex> directTrasitiveClosure(Vertex v) {
 		HashSet<Vertex> directTransitiveClosure = new HashSet<Vertex>();
+		return DTC(v, directTransitiveClosure);
+	}
+	
+	private HashSet<Vertex> DTC(Vertex v, HashSet<Vertex> set) {
+		Iterator<Vertex> iterator = ((DGVertex) v).getSuccessors().iterator();
+		Vertex vertex;
+
+		set.add(v);		
 		
-		return directTransitiveClosure;
+		while (iterator.hasNext()) {
+			vertex = (DGVertex) iterator.next();
+			
+			if (!set.contains(vertex))
+				DTC(vertex, set);
+		}
+		return set;
+	}
+	
+	public HashSet<Vertex> indirectTransitiveClosure(Vertex v) {
+		HashSet<Vertex> indirectTransitiveClosure = new HashSet<Vertex>();
+		return ITC(v, indirectTransitiveClosure);
+	}
+	
+	private HashSet<Vertex> ITC(Vertex v, HashSet<Vertex> set) {
+		Iterator<Vertex> iterator = ((DGVertex) v).getPredecessors().iterator();
+		Vertex vertex;
+		
+		set.add(v);
+		
+		while (iterator.hasNext()) {
+			vertex = (DGVertex) iterator.next();
+			
+			if (!set.contains(vertex))
+				ITC(vertex, set);
+		}
+		return set;
 	}
 	
 	public HashSet<Vertex> getIndirectTrasitiveClosure() {
