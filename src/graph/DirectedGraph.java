@@ -41,22 +41,20 @@ public class DirectedGraph extends Graph {
 		return edges.remove(edge);
 	}
 	
-	/* Antecessores */
 	public HashSet<Vertex> predecessors(Vertex v) {
-		return ((DGVertex) v).getPredecessors();
+		return ((DGVertex) v).predecessors();
 	}
 	
-	/* Sucessores */
 	public HashSet<Vertex> successors(Vertex v) {
-		return ((DGVertex) v).getSuccessors();
+		return ((DGVertex) v).successors();
 	}
 	
 	public int indegree(Vertex v) {
-		return ((DGVertex) v).getIndegree();
+		return ((DGVertex) v).indegree();
 	}
 	
 	public int outdegree(Vertex v) {
-		return ((DGVertex) v).getOutdegree();
+		return ((DGVertex) v).outdegree();
 	}
 
 	@Override
@@ -64,18 +62,17 @@ public class DirectedGraph extends Graph {
 		Iterator<Vertex> iterator = vertices.iterator();
 		
 		DGVertex vertex = (DGVertex) this.oneVertex();
-		int indegree = vertex.getIndegree();
-		int outdegree = vertex.getOutdegree();
+		int indegree = vertex.indegree();
+		int outdegree = vertex.outdegree();
 		
 		while (iterator.hasNext()) {
 			vertex = (DGVertex) iterator.next();
 			
-			if ((vertex.getIndegree() != indegree) ||
-					(vertex.getOutdegree() != outdegree)) {
+			if ((vertex.indegree() != indegree) ||
+					(vertex.outdegree() != outdegree)) {
 				return false;
 			}
 		}
-		
 		return true;
 	}
 
@@ -88,59 +85,51 @@ public class DirectedGraph extends Graph {
 		while (iterator.hasNext()) {
 			vertex = (DGVertex) iterator.next();
 			
-			if ((vertex.getIndegree() != (vertices.size()-1)) ||
-					(vertex.getOutdegree() != (vertices.size()-1))) 
+			if ((vertex.indegree() != (vertices.size()-1)) ||
+					(vertex.outdegree() != (vertices.size()-1))) 
 				return false;
-			
 		}
-		
 		return true;
 	}
 	
 	public HashSet<Vertex> directTrasitiveClosure(Vertex v) {
-		HashSet<Vertex> directTransitiveClosure = new HashSet<Vertex>();
-		return DTC(v, directTransitiveClosure);
+		HashSet<Vertex> markedVertices = new HashSet<Vertex>();
+		return DTC(v, markedVertices);
 	}
 	
-	private HashSet<Vertex> DTC(Vertex v, HashSet<Vertex> set) {
-		Iterator<Vertex> iterator = ((DGVertex) v).getSuccessors().iterator();
+	private HashSet<Vertex> DTC(Vertex v, HashSet<Vertex> markedVertices) {
+		Iterator<Vertex> iterator = ((DGVertex) v).successors().iterator();
 		Vertex vertex;
 
-		set.add(v);		
+		markedVertices.add(v);		
 		
 		while (iterator.hasNext()) {
 			vertex = (DGVertex) iterator.next();
 			
-			if (!set.contains(vertex))
-				DTC(vertex, set);
+			if (!markedVertices.contains(vertex))
+				DTC(vertex, markedVertices);
 		}
-		return set;
+		return markedVertices;
 	}
 	
 	public HashSet<Vertex> indirectTransitiveClosure(Vertex v) {
-		HashSet<Vertex> indirectTransitiveClosure = new HashSet<Vertex>();
-		return ITC(v, indirectTransitiveClosure);
+		HashSet<Vertex> markedVertices = new HashSet<Vertex>();
+		return ITC(v, markedVertices);
 	}
 	
-	private HashSet<Vertex> ITC(Vertex v, HashSet<Vertex> set) {
-		Iterator<Vertex> iterator = ((DGVertex) v).getPredecessors().iterator();
+	private HashSet<Vertex> ITC(Vertex v, HashSet<Vertex> markedVertices) {
+		Iterator<Vertex> iterator = ((DGVertex) v).predecessors().iterator();
 		Vertex vertex;
 		
-		set.add(v);
+		markedVertices.add(v);
 		
 		while (iterator.hasNext()) {
 			vertex = (DGVertex) iterator.next();
 			
-			if (!set.contains(vertex))
-				ITC(vertex, set);
+			if (!markedVertices.contains(vertex))
+				ITC(vertex, markedVertices);
 		}
-		return set;
-	}
-	
-	public HashSet<Vertex> getIndirectTrasitiveClosure() {
-		HashSet<Vertex> indirectTransitiveClosure = new HashSet<Vertex>();
-		
-		return indirectTransitiveClosure;
+		return markedVertices;
 	}
 
 	@Override
@@ -153,7 +142,4 @@ public class DirectedGraph extends Graph {
 		
 		return (allVerticesSet.size() == vertices.size());
 	}
-	
-	
-
 }

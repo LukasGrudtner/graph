@@ -42,26 +42,25 @@ public class UndirectedGraph extends Graph {
 	}
 	
 	public HashSet<Vertex> neighborhood(Vertex v) {
-		return ((UGVertex) v).getNeighborhood();
+		return ((UGVertex) v).neighborhood();
 	}
 	
 	public int degree(Vertex v) {
-		return ((UGVertex) v).getDegree();
+		return ((UGVertex) v).degree();
 	}
 	
 	public boolean isRegular() {
 		Iterator<Vertex> iterator = vertices.iterator();
 		
 		UGVertex vertex;
-		int degree = ((UGVertex) this.oneVertex()).getDegree();
+		int degree = ((UGVertex) this.oneVertex()).degree();
 		
 		while (iterator.hasNext()) {
 			vertex = (UGVertex) iterator.next();
 			
-			if (vertex.getDegree() != degree)
+			if (vertex.degree() != degree)
 				return false;
 		}
-		
 		return true;
 	}
 	
@@ -73,10 +72,9 @@ public class UndirectedGraph extends Graph {
 		while (iterator.hasNext()) {
 			vertex = (UGVertex) iterator.next();
 			
-			if (vertex.getDegree() != (vertices.size()-1))
+			if (vertex.degree() != (vertices.size()-1))
 				return false;
 		}
-		
 		return true;
 	}
 	
@@ -85,49 +83,46 @@ public class UndirectedGraph extends Graph {
 		HashSet<Vertex> set = new HashSet<Vertex>();
 		Vertex vertex = oneVertex();
 		
-		return (isThisGraphConnected(vertex, set).size() == order());
+		return (checkConnectivity(vertex, set).size() == order());
 	}
 	
-	private HashSet<Vertex> isThisGraphConnected(Vertex v, HashSet<Vertex> set) {
-		Iterator<Vertex> iterator = ((UGVertex) v).getNeighborhood().iterator();
+	private HashSet<Vertex> checkConnectivity(Vertex v, HashSet<Vertex> markedVertices) {
+		Iterator<Vertex> iterator = ((UGVertex) v).neighborhood().iterator();
 		Vertex vertex;
 		
-		set.add(v);
+		markedVertices.add(v);
 		
 		while (iterator.hasNext()) {
 			vertex = (UGVertex) iterator.next();
 			
-			if (!set.contains(vertex))
-				isThisGraphConnected(vertex, set);
+			if (!markedVertices.contains(vertex))
+				checkConnectivity(vertex, markedVertices);
 		}
-		
-		return set;
+		return markedVertices;
 	}
 	
 	public boolean isTree() {
-		
 		HashSet<Vertex> set = new HashSet<Vertex>();
 		Vertex v = oneVertex();
 		
-		return isThereCycle(v, null, set) && isConnected();
+		return !isThereCycle(v, null, set) && isConnected();
 	}
 	
-	private boolean isThereCycle (Vertex v, Vertex previous, HashSet<Vertex> set) {
-		Iterator<Vertex> iterator = ((UGVertex) v).getNeighborhood().iterator();
+	private boolean isThereCycle (Vertex v, Vertex previous, HashSet<Vertex> markedVertices) {
+		Iterator<Vertex> iterator = ((UGVertex) v).neighborhood().iterator();
 		Vertex vertex;
 		
-		if (set.contains(v))
+		if (markedVertices.contains(v))
 			return true;
 		
-		set.add(v);
+		markedVertices.add(v);
 		
 		while (iterator.hasNext()) {
 			vertex = (UGVertex) iterator.next();
 			
 			if (!vertex.equals(previous))
-				if (isThereCycle(vertex, v, set))
+				if (isThereCycle(vertex, v, markedVertices))
 					return true;
-			
 		}
 		return false;
 	}

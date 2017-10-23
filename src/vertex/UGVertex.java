@@ -9,13 +9,11 @@ public class UGVertex extends Vertex {
 	
 	public UGVertex(Object data) {
 		super(data);
-		
 		degree = 0;
-		
 		neighborhood = new HashSet<Vertex>();
 	}
 
-	public HashSet<Vertex> getNeighborhood() {
+	public HashSet<Vertex> neighborhood() {
 		return neighborhood;
 	}
 	
@@ -27,7 +25,7 @@ public class UGVertex extends Vertex {
 		return neighborhood.remove(v);
 	}
 	
-	public int getDegree() {
+	public int degree() {
 		return degree;
 	}
 	
@@ -38,8 +36,4 @@ public class UGVertex extends Vertex {
 	public void decDegree() {
 		degree--;
 	}
-	
-	
-	
-
 }

@@ -1,5 +1,4 @@
 package vertex;
-import java.util.HashSet;
 
 public class Vertex {
 	

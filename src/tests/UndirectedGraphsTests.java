@@ -13,8 +13,6 @@ import vertex.Vertex;
 
 public class UndirectedGraphsTests {
 	
-	
-	
 	@org.junit.Test
 	public void addVertex() {
 		Graph graph = new UndirectedGraph();
@@ -184,4 +182,47 @@ public class UndirectedGraphsTests {
 		
 		assertEquals(true, graph.isConnected());
 	}
+	
+	@org.junit.Test
+	public void isTree() {
+		Graph graph = new UndirectedGraph();
+		
+		Vertex v1 = new UGVertex("Vertex One");
+		Vertex v2 = new UGVertex("Vertex Two");
+		Vertex v3 = new UGVertex("Vertex Three");
+		Vertex v4 = new UGVertex("Vertex Four");
+		Vertex v5 = new UGVertex("Vertex Five");
+		Vertex v6 = new UGVertex("Vertex Six");
+		
+		graph.addVertex(v1);
+		graph.addVertex(v2);
+		graph.addVertex(v3);
+		graph.addVertex(v4);
+		graph.addVertex(v5);
+		graph.addVertex(v6);
+		
+		graph.connect(v1, v2);
+		graph.connect(v1, v3);
+		graph.connect(v1, v4);
+		graph.connect(v2, v5);
+		graph.connect(v3, v6);
+		assertEquals(true, ((UndirectedGraph) graph).isTree());
+		
+		graph.connect(v4, v6);
+		assertEquals(false, ((UndirectedGraph) graph).isTree());
+		
+		graph.disconnect(v6, v3);
+		assertEquals(true, ((UndirectedGraph) graph).isTree());
+	}
+	
+	@org.junit.Test
+	public void isTreeSingleVertice() {
+		Graph graph = new UndirectedGraph();
+		
+		Vertex v1 = new UGVertex("Vertex One");
+		graph.addVertex(v1);
+		
+		assertEquals(true, ((UndirectedGraph) graph).isTree());
+	}
+	
 }

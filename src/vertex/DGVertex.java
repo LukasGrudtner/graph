@@ -19,7 +19,7 @@ public class DGVertex extends Vertex {
 		successors = new HashSet<Vertex>();
 	}
 	
-	public HashSet<Vertex> getPredecessors() {
+	public HashSet<Vertex> predecessors() {
 		return predecessors;
 	}
 	
@@ -31,7 +31,7 @@ public class DGVertex extends Vertex {
 		return predecessors.remove(v);
 	}
 	
-	public HashSet<Vertex> getSuccessors() {
+	public HashSet<Vertex> successors() {
 		return successors;
 	}
 	
@@ -43,7 +43,7 @@ public class DGVertex extends Vertex {
 		return successors.remove(v);
 	}
 	
-	public int getIndegree() {
+	public int indegree() {
 		return indegree;
 	}
 	
@@ -55,7 +55,7 @@ public class DGVertex extends Vertex {
 		indegree--;
 	}
 	
-	public int getOutdegree() {
+	public int outdegree() {
 		return outdegree;
 	}
 	
@@ -66,6 +66,4 @@ public class DGVertex extends Vertex {
 	public void decOutdegree() {
 		outdegree--;
 	}
-	
-
 }
