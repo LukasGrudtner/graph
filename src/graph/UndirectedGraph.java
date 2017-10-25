@@ -5,6 +5,10 @@ import java.util.Iterator;
 import vertex.UGVertex;
 import vertex.Vertex;
 
+/*
+ * Implementação de um Grafo Não-orientado. Herda características da classe Grafo, porém possui funções características próprias.
+ */
+
 public class UndirectedGraph extends Graph {
 
 	public UndirectedGraph() {
@@ -33,17 +37,19 @@ public class UndirectedGraph extends Graph {
 		((UGVertex) v2).removeNeighbor(v1);
 	}
 	
+	/* Retorna o conjunto dos vértices adjacentes ao vértice v. */
 	public HashSet<Vertex> neighborhood(Vertex v) {
 		return ((UGVertex) v).neighborhood();
 	}
 	
+	/* Retorna o grau do vértice v. */
 	public int degree(Vertex v) {
 		return ((UGVertex) v).degree();
 	}
 	
+	@Override
 	public boolean isRegular() {
 		Iterator<Vertex> iterator = vertices.iterator();
-		
 		UGVertex vertex;
 		int degree = ((UGVertex) this.oneVertex()).degree();
 		
@@ -56,6 +62,7 @@ public class UndirectedGraph extends Graph {
 		return true;
 	}
 	
+	@Override
 	public boolean isComplete() {
 		Iterator<Vertex> iterator = vertices.iterator();
 		UGVertex vertex;
@@ -69,11 +76,13 @@ public class UndirectedGraph extends Graph {
 		return true;
 	}
 	
+	/* Retorna um conjunto com todos os vértices que são fecho transitivo de um dado vértice v. */
 	public HashSet<Vertex> transitiveClosure(Vertex v) {
 		HashSet<Vertex> markedVertices = new HashSet<Vertex>();
 		return searchTransitiveClosure(v, markedVertices);
 	}
 	
+	/* Função auxiliar recursiva para encontrar o fecho transitivo do vértice v. */
 	private HashSet<Vertex> searchTransitiveClosure(Vertex v, HashSet<Vertex> markedVertices) {
 		Iterator<Vertex> iterator = ((UGVertex) v).neighborhood().iterator();
 		UGVertex vertex;
@@ -91,27 +100,11 @@ public class UndirectedGraph extends Graph {
 	
 	@Override
 	public boolean isConnected() {
-		HashSet<Vertex> markedVertices = new HashSet<Vertex>();
 		Vertex v = oneVertex();
-		
 		return vertices.equals(transitiveClosure(v));
 	}
-	
-	private HashSet<Vertex> checkConnectivity(Vertex v, HashSet<Vertex> markedVertices) {
-		Iterator<Vertex> iterator = ((UGVertex) v).neighborhood().iterator();
-		Vertex vertex;
-		
-		markedVertices.add(v);
-		
-		while (iterator.hasNext()) {
-			vertex = (UGVertex) iterator.next();
-			
-			if (!markedVertices.contains(vertex))
-				checkConnectivity(vertex, markedVertices);
-		}
-		return markedVertices;
-	}
-	
+
+	/* Retorna o valor booleano true se o grafo for uma árvore. Caso contrário, retorna false. */
 	public boolean isTree() {
 		HashSet<Vertex> set = new HashSet<Vertex>();
 		Vertex v = oneVertex();
@@ -119,6 +112,7 @@ public class UndirectedGraph extends Graph {
 		return !isThereCycle(v, null, set) && isConnected();
 	}
 	
+	/* Função auxiliar recuriva para determinar se o grafo possui pelo menos um ciclo. */
 	private boolean isThereCycle (Vertex v, Vertex previous, HashSet<Vertex> markedVertices) {
 		Iterator<Vertex> iterator = ((UGVertex) v).neighborhood().iterator();
 		Vertex vertex;

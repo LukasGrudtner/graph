@@ -13,9 +13,10 @@ import vertex.Vertex;
 
 public class Control {
 	
-	private final static int MAX_WORKLOAD = 30;
-	private static Graph graph;
+	private final static int MAX_WORKLOAD = 30;		/* Carga horária semanal máxima definida para o curso. 	*/
+	private static Graph graph;						/* Grafo utilizado para a aplicação. 					*/
 
+	
 	public static void main(String[] args) {
 		createGraph(new DisciplinesRemaining().getDisciplinesRemainingSet());
 		ArrayList<Vertex> vertices = ((DirectedGraph) graph).topologicalSort();
@@ -28,12 +29,13 @@ public class Control {
 		}
 	}
 	
+	/* Inicializa o grafo como um grafo orientado, e inicializa os vértices. */
 	public static void createGraph(HashSet<Object> objectSet) {
-		/* Inicizaliza o grafo como um grafo orientado. */
 		graph = new DirectedGraph();
 		initilizeVertices(objectSet);
 	}
 	
+	/* Chama a função auxiliar AddVertex somente para as disciplinas que possuem pré-requisitos. */
 	private static void initilizeVertices(HashSet<Object> objectSet) {
 		HashSet<Object> markedObjects = new HashSet<Object>();
 		Iterator<Object> iterator = objectSet.iterator();
@@ -48,6 +50,7 @@ public class Control {
 		}
 	}
 	
+	/* Função auxiliar para inicializar os vértices, adicioná-los no grafo e criar suas conexões. */
 	private static void addVertex(Object prerequisiteDiscipline, Vertex vertexPredecessor, HashSet<Object> markedDisciplines) {
 		Vertex vertex = null;
 		
@@ -90,6 +93,9 @@ public class Control {
 		}
 	}
 	
+	//man-in-the-middle, reply
+	
+	/* Função auxiliar, retorna o vértice que possui o objeto informado por parâmetro. */
 	private static Vertex getVertex(Object object) {
 		Iterator<Vertex> iterator = graph.vertices().iterator();
 		Vertex v;
@@ -106,42 +112,7 @@ public class Control {
 		return null;
 	}
 	
-	/* Faz a conexão dos vértices baseando-se nos pré-requisitos de cada disciplina. */
-	private static void connectVertices() {
-		Iterator<Vertex> iterator = graph.vertices().iterator();
-		Vertex v1;
-		Discipline disciplineV1;
-		
-		/* Para cada vértice do grafo: */
-		while (iterator.hasNext()) {
-			v1 = iterator.next();
-			disciplineV1 = (Discipline) v1.getData();
-			
-			/* Se a disciplina v1 tem pré-requisitos: */
-			if (disciplineV1.getPrerequisites() != null) {
-				
-				/* Para cada disciplina pré-requisito da disciplina de v1: */
-				for (int i = 0; i < disciplineV1.getPrerequisites().size(); i++) {
-					Iterator<Vertex> iterator2 = graph.vertices().iterator();
-					Vertex v2;
-					Discipline prerequisiteV1, discipline;
-					prerequisiteV1 = disciplineV1.getPrerequisites().get(i);
-					
-					/* Encontra o vértice que possui aquela disciplina. */
-					while (iterator2.hasNext()) {
-						v2 = iterator2.next();
-						discipline = (Discipline) v2.getData();
-						
-						if (prerequisiteV1.equals(discipline))
-							graph.connect(v2, v1);
-					}
-				}
-				
-			}
-				
-		}
-	}
-	
+	/* Recebe uma lista de vértices ordenados topológicamente e retorna uma lista com suas respectivas disciplinas. */
 	private static ArrayList<Discipline> convertVerticesListToDisciplinesList(ArrayList<Vertex> vertices) {
 		ArrayList<Discipline> disciplines = new ArrayList<Discipline>();
 		

@@ -9,6 +9,10 @@ import javax.swing.plaf.synth.SynthSeparatorUI;
 import vertex.DGVertex;
 import vertex.Vertex;
 
+/*
+ * Implementação de um Grafo Orientado, o qual herda características da classe Grafo, porém possui características próprias.
+ */
+ 
 public class DirectedGraph extends Graph {
 	
 	public DirectedGraph() {
@@ -39,18 +43,22 @@ public class DirectedGraph extends Graph {
 		((DGVertex) v2).removePredecessor(v1);
 	}
 	
+	/* Retorna o conjunto de vértices predecessores do vértice v. */
 	public HashSet<Vertex> predecessors(Vertex v) {
 		return ((DGVertex) v).predecessors();
 	}
 	
+	/* Retorna o conjunto de vértices sucessores do vértice v. */
 	public HashSet<Vertex> successors(Vertex v) {
 		return ((DGVertex) v).successors();
 	}
 	
+	/* Retorna o grau de recepção do vértice v. */
 	public int indegree(Vertex v) {
 		return ((DGVertex) v).indegree();
 	}
 	
+	/* Retorna o grau de emissão do vértice v. */
 	public int outdegree(Vertex v) {
 		return ((DGVertex) v).outdegree();
 	}
@@ -90,11 +98,13 @@ public class DirectedGraph extends Graph {
 		return true;
 	}
 	
+	/* Retorna um conjunto com todos os vértices que são fecho transitivo direto de um dado vértice v. */
 	public HashSet<Vertex> directTrasitiveClosure(Vertex v) {
 		HashSet<Vertex> markedVertices = new HashSet<Vertex>();
 		return searchDirectTransitiveClosure(v, markedVertices);
 	}
 	
+	/* Função auxiliar recursiva para encontrar o fecho transitivo direto do vértice v. */
 	private HashSet<Vertex> searchDirectTransitiveClosure(Vertex v, HashSet<Vertex> markedVertices) {
 		Iterator<Vertex> iterator = ((DGVertex) v).successors().iterator();
 		Vertex vertex;
@@ -110,11 +120,13 @@ public class DirectedGraph extends Graph {
 		return markedVertices;
 	}
 	
+	/* Retorna um conjunto com todos os vértices que são fecho transitivo indireto de um dado vértice v. */
 	public HashSet<Vertex> indirectTransitiveClosure(Vertex v) {
 		HashSet<Vertex> markedVertices = new HashSet<Vertex>();
 		return searchIndirectTransitiveClosure(v, markedVertices);
 	}
 	
+	/* Função auxiliar recursiva para encontrar o fecho transitivo indireto de um dado vértice v. */
 	private HashSet<Vertex> searchIndirectTransitiveClosure(Vertex v, HashSet<Vertex> markedVertices) {
 		Iterator<Vertex> iterator = ((DGVertex) v).predecessors().iterator();
 		Vertex vertex;
@@ -141,6 +153,7 @@ public class DirectedGraph extends Graph {
 		return (allVerticesSet.size() == vertices.size());
 	}
 	
+	/* Retorna uma lista com a ordem topológica do grafo. */
 	public ArrayList<Vertex> topologicalSort() {
 		ArrayList<Vertex> list = new ArrayList<Vertex>();
 		Vertex v;
@@ -159,6 +172,7 @@ public class DirectedGraph extends Graph {
 		return list;
 	}
 	
+	/* Função auxiliar recursiva para encontrar a ordenação topológica do grafo. */
 	private ArrayList<Vertex> searchTopologicalSort(Vertex v, ArrayList<Vertex> list) {
 		Iterator<Vertex> iterator = ((DGVertex) v).successors().iterator();
 		Vertex vertex;
