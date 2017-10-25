@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import discipline.Discipline;
-import discipline.DisciplinesRemaining;
 import graph.DirectedGraph;
 import graph.Graph;
+import model.Discipline;
+import model.DisciplinesRemaining;
 import vertex.DGVertex;
 import vertex.Vertex;
 
@@ -112,7 +112,7 @@ public class Control {
 		return null;
 	}
 	
-	/* Recebe uma lista de vértices ordenados topológicamente e retorna uma lista com suas respectivas disciplinas. */
+	/* Recebe uma lista de vértices ordenados topologicamente e retorna uma lista com suas respectivas disciplinas. */
 	private static ArrayList<Discipline> convertVerticesListToDisciplinesList(ArrayList<Vertex> vertices) {
 		ArrayList<Discipline> disciplines = new ArrayList<Discipline>();
 		
