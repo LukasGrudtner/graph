@@ -1,15 +1,28 @@
 package discipline;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 public class Discipline {
 	
+	private String code;
 	private String name;
 	private int workload;
-	private Discipline prerequisite;
+	private ArrayList<Discipline> prerequisites;
 	
-	public Discipline(String name, int workload, Discipline prerequisite) {
+	public Discipline(String code, String name, int workload, ArrayList<Discipline> prerequisites) {
+		this.code = code;
 		this.name = name;
 		this.workload = workload;
-		this.prerequisite = prerequisite;
+		this.prerequisites = prerequisites;
+	}
+	
+	public String getCode() {
+		return code;
+	}
+	
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 	public String getName() {
@@ -28,12 +41,12 @@ public class Discipline {
 		this.workload = workload;
 	}
 	
-	public Discipline getPrerequisite() {
-		return prerequisite;
+	public ArrayList<Discipline> getPrerequisites() {
+		return prerequisites;
 	}
 	
-	public void setPrerequisite(Discipline prerequisite) {
-		this.prerequisite = prerequisite;
+	public void setPrerequisite(ArrayList<Discipline> prerequisites) {
+		this.prerequisites = prerequisites;
 	}
 
 }

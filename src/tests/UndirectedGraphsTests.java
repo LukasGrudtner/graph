@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.BeforeClass;
 
+import control.Control;
+import discipline.DisciplinesRemaining;
 import graph.DirectedGraph;
 import graph.Graph;
 import graph.UndirectedGraph;

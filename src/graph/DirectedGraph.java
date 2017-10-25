@@ -1,6 +1,10 @@
 package graph;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+
+import javax.swing.plaf.synth.SynthSeparatorUI;
 
 import vertex.DGVertex;
 import vertex.Vertex;
@@ -135,5 +139,39 @@ public class DirectedGraph extends Graph {
 		searchIndirectTransitiveClosure(vertex, allVerticesSet);
 		
 		return (allVerticesSet.size() == vertices.size());
+	}
+	
+	public ArrayList<Vertex> topologicalSort() {
+		ArrayList<Vertex> list = new ArrayList<Vertex>();
+		Vertex v;
+		Iterator<Vertex> iterator = vertices.iterator();
+		
+		while (iterator.hasNext()) {
+			v = iterator.next();
+			/* Somente vértices fonte */
+			if (((DGVertex) v).predecessors().size() == 0) {
+				list = searchTopologicalSort(v, list);
+			}
+		}
+		
+		Collections.reverse(list);
+		
+		return list;
+	}
+	
+	private ArrayList<Vertex> searchTopologicalSort(Vertex v, ArrayList<Vertex> list) {
+		Iterator<Vertex> iterator = ((DGVertex) v).successors().iterator();
+		Vertex vertex;
+		
+		while (iterator.hasNext()) {
+			vertex = iterator.next();
+			
+			if (!list.contains(vertex)) {
+				searchTopologicalSort(vertex, list);
+			}
+		}
+		
+		list.add(v);
+		return list;
 	}
 }

@@ -2,7 +2,9 @@ package tests;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Stack;
 
 import org.junit.BeforeClass;
 
@@ -349,5 +351,39 @@ public class DirectedGraphsTests {
 		assertEquals(true, graph.isComplete());
 	}
 	
-	
+	@org.junit.Test
+	public void topologicalSort() {
+		Graph graph = new DirectedGraph();
+		Vertex v1 = new DGVertex("Vertex One");
+		Vertex v2 = new DGVertex("Vertex Two");
+		Vertex v3 = new DGVertex("Vertex Three");
+		Vertex v4 = new DGVertex("Vertex Four");
+		Vertex v5 = new DGVertex("Vertex Five");
+		Vertex v6 = new DGVertex("Vertex Six");
+		Vertex v7 = new DGVertex("Vertex Seven");
+		
+		graph.addVertex(v1);
+		graph.addVertex(v2);
+		graph.addVertex(v3);
+		graph.addVertex(v4);
+		graph.addVertex(v5);
+		graph.addVertex(v6);
+		graph.addVertex(v7);
+		
+		graph.connect(v1, v3);
+		graph.connect(v1, v4);
+		graph.connect(v2, v3);
+		graph.connect(v2, v6);
+		graph.connect(v3, v5);
+		graph.connect(v4, v5);
+		graph.connect(v5, v7);
+		graph.connect(v6, v7);
+		
+		ArrayList<Vertex> list = ((DirectedGraph) graph).topologicalSort();
+		
+		assertEquals(7, list.size());
+		assertEquals(true, list.get(0).equals(v1) || list.get(0).equals(v2));
+		assertEquals(true, list.get(5).equals(v5) || list.get(5).equals(v6));
+		assertEquals(true, list.get(6).equals(v7));
+	}
 }
