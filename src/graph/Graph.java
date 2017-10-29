@@ -23,9 +23,7 @@ public abstract class Graph {
 	}
 	
 	/* Remove o vértice v do grafo. */
-	public void removeVertex(Vertex v) {
-		vertices.remove(v);
-	}
+	public abstract void removeVertex(Vertex v);
 	
 	/* Conecta o vértice v1 ao vértice v2. Sua implementação difere para grafos orientados e não-orientados. */
 	public abstract void connect(Vertex v1, Vertex v2);

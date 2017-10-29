@@ -3,12 +3,12 @@ package control;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-
 import graph.DirectedGraph;
 import graph.Graph;
 import model.Discipline;
-import model.DisciplinesRemaining;
-import vertex.DGVertex;
+import model.DisciplinesNotTaken;
+import model.Semester;
+import vertex.DirectedGraphVertex;
 import vertex.Vertex;
 
 public class Control {
@@ -18,35 +18,28 @@ public class Control {
 
 	
 	public static void main(String[] args) {
-		createGraph(new DisciplinesRemaining().getDisciplinesRemainingSet());
-		ArrayList<Vertex> vertices = ((DirectedGraph) graph).topologicalSort();
-		ArrayList<Discipline> disciplinePlan = convertVerticesListToDisciplinesList(vertices);
+		createGraph(new DisciplinesNotTaken().getDisciplinesNotTakenSet());
+		ArrayList<Vertex> vertices = ((DirectedGraph) graph).topologicalSort();					/* Lista com a ordenação topológica de vértices do grafo. */
+		ArrayList<Semester> semesters = calculatesSemesters(vertices);							/* Lista de semestres com suas respectivas disciplinas. */
 		
-		ArrayList<ArrayList<Discipline>> semesters = calculatesSemesters(disciplinePlan);
-		
-		for (int i = 0; i < disciplinePlan.size(); i++) {
-			System.out.println(disciplinePlan.get(i).getName());
-		}
+		print(semesters);
 	}
 	
-	/* Inicializa o grafo como um grafo orientado, e inicializa os vértices. */
+	/* Inicializa o grafo como um grafo orientado. */
 	public static void createGraph(HashSet<Object> objectSet) {
 		graph = new DirectedGraph();
-		initilizeVertices(objectSet);
+		initializeVertices(objectSet);
 	}
 	
-	/* Chama a função auxiliar AddVertex somente para as disciplinas que possuem pré-requisitos. */
-	private static void initilizeVertices(HashSet<Object> objectSet) {
+	/* Inicializa os vértices do grafo, cada um representando uma disciplina. */
+	private static void initializeVertices(HashSet<Object> objectSet) {
 		HashSet<Object> markedObjects = new HashSet<Object>();
 		Iterator<Object> iterator = objectSet.iterator();
 		Object object;
 		
 		while (iterator.hasNext()) {
 			object = iterator.next();
-			
-			/* Chama a função addVertex somente para disciplinas que possuem pré-requisitos.*/
-			if (((Discipline) object).getPrerequisites() != null)
-				addVertex(object, null, markedObjects);
+			addVertex(object, null, markedObjects);
 		}
 	}
 	
@@ -54,13 +47,14 @@ public class Control {
 	private static void addVertex(Object prerequisiteDiscipline, Vertex vertexPredecessor, HashSet<Object> markedDisciplines) {
 		Vertex vertex = null;
 		
-		/* Se a disciplina não foi marcada, marque-a, crie um vértice com a disciplina e o adicione ao grafo. */
+		/* Se a disciplina não foi marcada, marque-a. Crie um vértice com a disciplina e o adicione ao grafo. */
 		if (!markedDisciplines.contains(prerequisiteDiscipline)) {
-			vertex = new DGVertex(prerequisiteDiscipline);
+
+			vertex = new DirectedGraphVertex(prerequisiteDiscipline);
 			graph.addVertex(vertex);
 			markedDisciplines.add(prerequisiteDiscipline);
-		
-			/* Itera sobre seus pré-requisitos, e para cada um, chame addVertex com vertex sendo o vértice pai.*/
+			
+			/* Itera sobre seus pré-requisitos. Para cada um, chame addVertex com vertex sendo o vértice predecessor.*/
 			if (((Discipline) prerequisiteDiscipline).getPrerequisites() != null) {
 				Iterator<Discipline> iterator = ((Discipline) prerequisiteDiscipline).getPrerequisites().iterator();
 					
@@ -73,29 +67,28 @@ public class Control {
 			
 			/* Ao retornar da recursão, faça a conexão dos vértices. Caso seja um vértice fonte, não faça a conexão, pois este não possui predecessor. */
 			if (vertexPredecessor != null) {
-				/* A ordem de conexão é alterada pois começamos com as disciplinas que possuem pré-requisitos, porém, no grafo, os vértices fontes
+
+				/* 
+				 * A ordem de conexão é alterada pois começamos com as disciplinas que possuem pré-requisitos, porém, no grafo, os vértices fontes
 				 * serão as disciplinas sem pré-requisitos.
 				 */
 				graph.connect(vertex, vertexPredecessor);
-				System.out.println("Connect: " + ((Discipline) vertexPredecessor.getData()).getName() + " with " + ((Discipline) vertex.getData()).getName());
 			}
 		
-		/* Se encontrar uma disciplina marcada, não temos a referência do seu vértice. Logo, chame a função getVertex, que recebe
-		 * a disciplina como parâmetro, e devolve o seu respectivo vértice. Então, faça a conexão entre eles.
+		/* 
+		 * Se encontrar uma disciplina marcada, não temos a referência do seu vértice. Logo, chame a função getVertex, que recebe
+		 * a disciplina como parâmetro e devolve o seu respectivo vértice. Então, faça a conexão entre eles.
 		 */
 		} else {
 			vertex = getVertex(prerequisiteDiscipline);
 			if (vertex != null && vertexPredecessor != null) {
 				graph.connect(vertex, vertexPredecessor);
-				System.out.println("Connect: " + ((Discipline) vertexPredecessor.getData()).getName() + " with " + ((Discipline) vertex.getData()).getName());
 
 			}
 		}
 	}
 	
-	//man-in-the-middle, reply
-	
-	/* Função auxiliar, retorna o vértice que possui o objeto informado por parâmetro. */
+	/* Função auxiliar que retorna o vértice que possui o objeto informado por parâmetro. */
 	private static Vertex getVertex(Object object) {
 		Iterator<Vertex> iterator = graph.vertices().iterator();
 		Vertex v;
@@ -108,40 +101,81 @@ public class Control {
 			if (auxObject.equals(object))
 				return v;
 		}
-		
 		return null;
 	}
 	
-	/* Recebe uma lista de vértices ordenados topologicamente e retorna uma lista com suas respectivas disciplinas. */
-	private static ArrayList<Discipline> convertVerticesListToDisciplinesList(ArrayList<Vertex> vertices) {
-		ArrayList<Discipline> disciplines = new ArrayList<Discipline>();
+	/* Organiza todas as disciplinas em uma lista de semestres ordenados, respeitando as condições de pré-requisitos. */
+	private static ArrayList<Semester> calculatesSemesters(ArrayList<Vertex> topologicalSort) {
+		ArrayList<Semester> semesters = new ArrayList<Semester>();
 		
-		for (int i = 0; i < vertices.size(); i++) {
-			disciplines.add((Discipline) vertices.get(i).getData());
-		}
+		/* Adiciona o semestre inicial e a primeira disciplina da ordenação topológica. */
+		Semester semester = new Semester();
+		semester.addDiscipline((Discipline) topologicalSort.get(0).getData());
+		semester.incWorkload(((Discipline) topologicalSort.get(0).getData()).getWorkload());
+		semesters.add(semester);
 		
-		return disciplines;
-	}
-	
-	private static ArrayList<ArrayList<Discipline>> calculatesSemesters(ArrayList<Discipline> disciplinePlan) {
-		ArrayList<ArrayList<Discipline>> semesters = new ArrayList<ArrayList<Discipline>>();
+		int i = 1;
 		
-		int workload = 0;
-		int i = 0;
-		while (i < disciplinePlan.size()) {
-			ArrayList<Discipline> semester = new ArrayList<Discipline>();
-			while (workload < MAX_WORKLOAD && i < disciplinePlan.size()) {
-				workload += disciplinePlan.get(i).getWorkload();
-				if (workload > MAX_WORKLOAD) {
-					workload = 0;
+		/* Para cada vértice da lista de ordenação topólogica: */
+		while (i < topologicalSort.size()) {
+			
+			Discipline discipline = (Discipline) topologicalSort.get(i).getData();
+			int higherIndex = 0;
+			
+			/* Se a disciplina possui pré-requisitos, pegue o maior índice (semestre) deles. */
+			if (discipline.getPrerequisites() != null) {
+				
+				Iterator<Discipline> iterator = discipline.getPrerequisites().iterator();
+				Discipline prerequisite;
+				
+				/* Varre todos os pré-requisitos e verifica qual o semestre mais avançado em que uma disciplina pré-requisito se encontra. */
+				while (iterator.hasNext()) {
+					prerequisite = iterator.next();
+					if (prerequisite.getSemester() > higherIndex) {
+						higherIndex = prerequisite.getSemester();
+					}
+				}
+				higherIndex++;
+			}
+			
+			/* Percorremos a lista de semestres a partir do maior índice obtido anteriormente. */
+			boolean disciplineWasAdded = false;
+			for (int j = higherIndex; j < semesters.size(); j++) {
+				
+				/* Se encontrarmos um semestre que possua espaço de workload, adicione. */
+				if ((semesters.get(j).getWorkload() + discipline.getWorkload() <= MAX_WORKLOAD)) {
+					semesters.get(j).addDiscipline(discipline);
+					semesters.get(j).incWorkload(discipline.getWorkload());
+					discipline.setSemester(j);
+					disciplineWasAdded = true;
 					break;
-				} else {
-					semester.add(disciplinePlan.get(i));
-					i++;
 				}
 			}
-			semesters.add(semester);
+			
+			/* Se a disciplina não pôde ser adicionada em nenhum semestre, crie um novo e adicione-o. */
+			if (!disciplineWasAdded) {
+				
+				Semester lastSemester = new Semester();
+				lastSemester.addDiscipline(discipline);
+				lastSemester.incWorkload(discipline.getWorkload());
+				semesters.add(lastSemester);
+				discipline.setSemester(semesters.size()-1);
+			}
+			
+			i++;
 		}
 		return semesters;
+	}
+	
+	/* Função auxiliar para imprimir na tela a lista de semestres com suas disciplinas. */
+	private static void print(ArrayList<Semester> semesters) {
+		for (int i = 0; i < semesters.size(); i++) {
+			System.out.println("\n### SEMESTRE " + (i+1) + " ### " + (semesters.get(i)).getWorkload() + " créditos");
+			
+			Iterator<Discipline> iterator = ((Semester) semesters.get(i)).getDisciplines().iterator();
+			while (iterator.hasNext()) {
+				System.out.println(iterator.next().getName());
+			}
+		}
 	}
 }

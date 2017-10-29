@@ -6,14 +6,14 @@ import java.util.HashSet;
  * Implementação de um Vértice para um Grafo Orientado. Herda funções da classe Vértice, porém possui funções características próprias
  * para grafo orientados.
  */
-public class DGVertex extends Vertex {
+public class DirectedGraphVertex extends Vertex {
 
 	private int indegree; 					/* Grau de recepção do vértice. 		*/
 	private int outdegree; 					/* Grau de emissão do vértice. 			*/
 	private HashSet<Vertex> predecessors;	/* Conjunto de vértices predecessores. 	*/
 	private HashSet<Vertex> successors;		/* Conjunto de vértices sucessores. 	*/
 	
-	public DGVertex(Object data) {
+	public DirectedGraphVertex(Object data) {
 		super(data);
 		
 		indegree = 0;
@@ -30,12 +30,20 @@ public class DGVertex extends Vertex {
 	
 	/* Adiciona o vértice v ao conjunto dos vértices predecessores. */
 	public boolean addPredecessor(Vertex v) {
-		return predecessors.add(v);
+		if (predecessors.add(v)) {
+			indegree++;
+			return true;
+		}
+		return false;
 	}
 	
 	/* Remove o vértice v do conjunto dos vértices predecessores. */
 	public boolean removePredecessor(Vertex v) {
-		return predecessors.remove(v);
+		if (predecessors.remove(v)) {
+			indegree--;
+			return true;
+		}
+		return false;
 	}
 	
 	/* Retorna o conjunto dos vértices sucessores. */
@@ -45,12 +53,20 @@ public class DGVertex extends Vertex {
 	
 	/* Adiciona o vértice v ao conjunto dos vértices sucessores. */
 	public boolean addSuccessor(Vertex v) {
-		return successors.add(v);
+		if (successors.add(v)) {
+			outdegree++;
+			return true;
+		}
+		return false;
 	}
 	
 	/* Remove o vértice v do conjunto dos vértices sucessores. */
 	public boolean removeSuccessor(Vertex v) {
-		return successors.remove(v);
+		if (successors.remove(v)) {
+			outdegree--;
+			return true;
+		}
+		return false;
 	}
 	
 	/* Retorna o grau de rececepção. */
@@ -58,28 +74,8 @@ public class DGVertex extends Vertex {
 		return indegree;
 	}
 	
-	/* Incrementa em 1 unidade o grau de recepção. */
-	public void incIndegree() {
-		indegree++;
-	}
-	
-	/* Decrementa em 1 unidade o grau de recepção. */
-	public void decIndegree() {
-		indegree--;
-	}
-	
 	/* Retorna o grau de emissão. */
 	public int outdegree() {
 		return outdegree;
-	}
-	
-	/* Incrementa em 1 unidade o grau de emissão. */
-	public void incOutdegree() {
-		outdegree++;
-	}
-	
-	/* Decrementa em 1 unidade o grau de emissão. */
-	public void decOutdegree() {
-		outdegree--;
 	}
 }

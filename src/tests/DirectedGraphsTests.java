@@ -4,21 +4,18 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Stack;
-
-import org.junit.BeforeClass;
-
 import graph.DirectedGraph;
 import graph.Graph;
-import graph.UndirectedGraph;
-import vertex.DGVertex;
-import vertex.UGVertex;
+import vertex.DirectedGraphVertex;
 import vertex.Vertex;
 
 public class DirectedGraphsTests {
 	
+	/*
+	 * Conjunto de testes para a classe de Grafos Orientados.
+	 */
 	
-	
+	/* Verifica a adição de um vértice ao grafo. */
 	@org.junit.Test
 	public void addVertex() {
 		Graph graph = new DirectedGraph();
@@ -27,10 +24,11 @@ public class DirectedGraphsTests {
 		assertEquals(1, graph.order());
 	}
 	
+	/* Verifica a remoção de um vértice do grafo. */
 	@org.junit.Test
 	public void removeVertex() {
 		Graph graph = new DirectedGraph();
-		Vertex v1 = new UGVertex("Vertex One");
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
 		
 		graph.addVertex(v1);
 		graph.removeVertex(v1);
@@ -38,12 +36,13 @@ public class DirectedGraphsTests {
 		assertEquals(0, graph.order());
 	}
 	
+	/* Verifica a conexão de dois vértices. */
 	@org.junit.Test
 	public void connectTwoVertices() {
 		
 		Graph graph = new DirectedGraph();
-		Vertex v1 = new DGVertex("Vertex One");
-		Vertex v2 = new DGVertex("Vertex Two");
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
+		Vertex v2 = new DirectedGraphVertex("Vertex Two");
 		
 		graph.addVertex(v1);
 		graph.addVertex(v2);
@@ -57,12 +56,13 @@ public class DirectedGraphsTests {
 		assertEquals(0, ((DirectedGraph) graph).outdegree(v2));
 	}
 	
+	/* Verifica a desconexão de dois vértices. */
 	@org.junit.Test
 	public void disconnectTwoVertices() {
 		
 		Graph graph = new DirectedGraph();
-		Vertex v1 = new DGVertex("Vertex One");
-		Vertex v2 = new DGVertex("Vertex Two");
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
+		Vertex v2 = new DirectedGraphVertex("Vertex Two");
 		
 		graph.addVertex(v1);
 		graph.addVertex(v2);
@@ -75,14 +75,15 @@ public class DirectedGraphsTests {
 
 	}
 	
+	/* Verifica predecessores e sucessores dos vértices. */
 	@org.junit.Test
 	public void predecessorsAndSuccessors() {
 		
 		Graph graph = new DirectedGraph();
-		Vertex v1 = new DGVertex("Vertex One");
-		Vertex v2 = new DGVertex("Vertex Two");
-		Vertex v3 = new DGVertex("Vertex Three");
-		Vertex v4 = new DGVertex("Vertex Four");
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
+		Vertex v2 = new DirectedGraphVertex("Vertex Two");
+		Vertex v3 = new DirectedGraphVertex("Vertex Three");
+		Vertex v4 = new DirectedGraphVertex("Vertex Four");
 		
 		graph.addVertex(v1);
 		graph.addVertex(v2);
@@ -112,14 +113,16 @@ public class DirectedGraphsTests {
 		assertEquals(false, IsV4InPredecessors);
 	}
 	
+	
+	/* Verifica a regularidade do grafo. */
 	@org.junit.Test
 	public void regularity() {
 		
 		Graph graph = new DirectedGraph();
-		Vertex v1 = new DGVertex("Vertex One");
-		Vertex v2 = new DGVertex("Vertex Two");
-		Vertex v3 = new DGVertex("Vertex Three");
-		Vertex v4 = new DGVertex("Vertex Four");
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
+		Vertex v2 = new DirectedGraphVertex("Vertex Two");
+		Vertex v3 = new DirectedGraphVertex("Vertex Three");
+		Vertex v4 = new DirectedGraphVertex("Vertex Four");
 		
 		graph.addVertex(v1);
 		graph.addVertex(v2);
@@ -135,13 +138,14 @@ public class DirectedGraphsTests {
 		assertEquals(true, graph.isRegular());
 	}
 	
+	/* Verifica a completude do grafo. */
 	@org.junit.Test
 	public void completeness() {
 		
 		Graph graph = new DirectedGraph();
-		Vertex v1 = new DGVertex("Vertex One");
-		Vertex v2 = new DGVertex("Vertex Two");
-		Vertex v3 = new DGVertex("Vertex Three");
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
+		Vertex v2 = new DirectedGraphVertex("Vertex Two");
+		Vertex v3 = new DirectedGraphVertex("Vertex Three");
 		
 		graph.addVertex(v1);
 		graph.addVertex(v2);
@@ -158,31 +162,54 @@ public class DirectedGraphsTests {
 		assertEquals(true, graph.isComplete());
 	}
 	
+	/* Verifica o grau de um vértice com laço. */
 	@org.junit.Test
-	public void degreeCycles() {
+	public void indegreeAndOutdegreeLoop() {
 		
 		Graph graph = new DirectedGraph();
-		Vertex v1 = new DGVertex("Vertex One");
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
 		
 		graph.addVertex(v1);
 		graph.connect(v1, v1);
 		
 		assertEquals(1, ((DirectedGraph) graph).indegree(v1));
 		assertEquals(1, ((DirectedGraph) graph).outdegree(v1));
-
 	}
 	
+	/* Verifica a adjacência de um vértice com laço. */
+	@org.junit.Test
+	public void predecessorAndSuccessorLoop() {
+		
+		Graph graph = new DirectedGraph();
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
+		Vertex v2 = new DirectedGraphVertex("Vertex Two");
+		
+		graph.addVertex(v1);
+		graph.addVertex(v2);
+		
+		graph.connect(v1, v1);
+		graph.connect(v1, v2);
+		graph.connect(v2, v1);
+		
+		assertEquals(2, ((DirectedGraphVertex) v1).successors().size());
+		assertEquals(true, ((DirectedGraphVertex) v1).successors().contains(v1));
+		
+		assertEquals(2, ((DirectedGraphVertex) v1).predecessors().size());
+		assertEquals(true, ((DirectedGraphVertex) v1).predecessors().contains(v1));
+	}
+	
+	/* Verifica o fecho transitivo direto do grafo. */
 	@org.junit.Test
 	public void directTransitiveClosure() {
 		Graph graph = new DirectedGraph();
-		Vertex v0 = new DGVertex("Vertex Zero");
-		Vertex v1 = new DGVertex("Vertex One");
-		Vertex v2 = new DGVertex("Vertex Two");
-		Vertex v3 = new DGVertex("Vertex Three");
-		Vertex v4 = new DGVertex("Vertex Four");
-		Vertex v5 = new DGVertex("Vertex Five");
-		Vertex v6 = new DGVertex("Vertex Six");
-		Vertex v7 = new DGVertex("Vertex Seven");
+		Vertex v0 = new DirectedGraphVertex("Vertex Zero");
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
+		Vertex v2 = new DirectedGraphVertex("Vertex Two");
+		Vertex v3 = new DirectedGraphVertex("Vertex Three");
+		Vertex v4 = new DirectedGraphVertex("Vertex Four");
+		Vertex v5 = new DirectedGraphVertex("Vertex Five");
+		Vertex v6 = new DirectedGraphVertex("Vertex Six");
+		Vertex v7 = new DirectedGraphVertex("Vertex Seven");
 		
 		graph.addVertex(v0);
 		graph.addVertex(v1);
@@ -201,11 +228,11 @@ public class DirectedGraphsTests {
 		graph.connect(v3, v6);
 		graph.connect(v3, v7);
 		
-		HashSet<Vertex> DTC_v0 = ((DirectedGraph) graph).directTrasitiveClosure(v0);
-		HashSet<Vertex> DTC_v1 = ((DirectedGraph) graph).directTrasitiveClosure(v1);
-		HashSet<Vertex> DTC_v2 = ((DirectedGraph) graph).directTrasitiveClosure(v2);
-		HashSet<Vertex> DTC_v3 = ((DirectedGraph) graph).directTrasitiveClosure(v3);
-		HashSet<Vertex> DTC_v7 = ((DirectedGraph) graph).directTrasitiveClosure(v7);
+		HashSet<Vertex> DTC_v0 = ((DirectedGraph) graph).directTransitiveClosure(v0);
+		HashSet<Vertex> DTC_v1 = ((DirectedGraph) graph).directTransitiveClosure(v1);
+		HashSet<Vertex> DTC_v2 = ((DirectedGraph) graph).directTransitiveClosure(v2);
+		HashSet<Vertex> DTC_v3 = ((DirectedGraph) graph).directTransitiveClosure(v3);
+		HashSet<Vertex> DTC_v7 = ((DirectedGraph) graph).directTransitiveClosure(v7);
 		
 		/* DTC of v0 */
 		assertEquals(true, DTC_v0.contains(v0));
@@ -237,17 +264,18 @@ public class DirectedGraphsTests {
 		assertEquals(1, DTC_v7.size());
 	}
 	
+	/* Verifica o fecho transitivo indireto do grafo. */
 	@org.junit.Test
 	public void indirectTransitiveClosure() {
 		Graph graph = new DirectedGraph();
-		Vertex v0 = new DGVertex("Vertex Zero");
-		Vertex v1 = new DGVertex("Vertex One");
-		Vertex v2 = new DGVertex("Vertex Two");
-		Vertex v3 = new DGVertex("Vertex Three");
-		Vertex v4 = new DGVertex("Vertex Four");
-		Vertex v5 = new DGVertex("Vertex Five");
-		Vertex v6 = new DGVertex("Vertex Six");
-		Vertex v7 = new DGVertex("Vertex Seven");
+		Vertex v0 = new DirectedGraphVertex("Vertex Zero");
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
+		Vertex v2 = new DirectedGraphVertex("Vertex Two");
+		Vertex v3 = new DirectedGraphVertex("Vertex Three");
+		Vertex v4 = new DirectedGraphVertex("Vertex Four");
+		Vertex v5 = new DirectedGraphVertex("Vertex Five");
+		Vertex v6 = new DirectedGraphVertex("Vertex Six");
+		Vertex v7 = new DirectedGraphVertex("Vertex Seven");
 		
 		graph.addVertex(v0);
 		graph.addVertex(v1);
@@ -271,11 +299,11 @@ public class DirectedGraphsTests {
 		graph.connect(v7, v6);
 		graph.connect(v7, v7);
 		
-		HashSet<Vertex> DTC_v0 = ((DirectedGraph) graph).directTrasitiveClosure(v0);
-		HashSet<Vertex> DTC_v1 = ((DirectedGraph) graph).directTrasitiveClosure(v1);
-		HashSet<Vertex> DTC_v2 = ((DirectedGraph) graph).directTrasitiveClosure(v2);
-		HashSet<Vertex> DTC_v4 = ((DirectedGraph) graph).directTrasitiveClosure(v4);
-		HashSet<Vertex> DTC_v7 = ((DirectedGraph) graph).directTrasitiveClosure(v7);
+		HashSet<Vertex> DTC_v0 = ((DirectedGraph) graph).directTransitiveClosure(v0);
+		HashSet<Vertex> DTC_v1 = ((DirectedGraph) graph).directTransitiveClosure(v1);
+		HashSet<Vertex> DTC_v2 = ((DirectedGraph) graph).directTransitiveClosure(v2);
+		HashSet<Vertex> DTC_v4 = ((DirectedGraph) graph).directTransitiveClosure(v4);
+		HashSet<Vertex> DTC_v7 = ((DirectedGraph) graph).directTransitiveClosure(v7);
 		
 		/* DTC of v0 */
 		assertEquals(true, DTC_v0.contains(v0));
@@ -311,13 +339,14 @@ public class DirectedGraphsTests {
 		assertEquals(8, DTC_v7.size());
 	}
 	
+	/* Verifica a conectividade do grafo. */
 	@org.junit.Test
 	public void connectivity() {
 		Graph graph = new DirectedGraph();
 		
-		Vertex v1 = new DGVertex("Vertex One");
-		Vertex v2 = new DGVertex("Vertex Two");
-		Vertex v3 = new DGVertex("Vertex Three");
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
+		Vertex v2 = new DirectedGraphVertex("Vertex Two");
+		Vertex v3 = new DirectedGraphVertex("Vertex Three");
 		
 		graph.addVertex(v1);
 		graph.addVertex(v2);
@@ -333,34 +362,37 @@ public class DirectedGraphsTests {
 		assertEquals(false, graph.isConnected());
 	}
 	
+	/* Verifica a conectividade de um grafo com um único vértice. */
 	@org.junit.Test
 	public void connectivitySingleVertex() {
 		Graph graph = new DirectedGraph();
-		Vertex v1 = new DGVertex("Vertex One");
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
 		graph.addVertex(v1);
 		
 		assertEquals(true, graph.isConnected());
 	}
 	
+	/* Verifica a completude de um grafo com um único vértice. */
 	@org.junit.Test
 	public void completenessSingleVertex() {
 		Graph graph = new DirectedGraph();
-		Vertex v1 = new DGVertex("Vertex One");
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
 		graph.addVertex(v1);
 		
 		assertEquals(true, graph.isComplete());
 	}
 	
+	/* Verifica a ordenação topológica. */
 	@org.junit.Test
 	public void topologicalSort() {
 		Graph graph = new DirectedGraph();
-		Vertex v1 = new DGVertex("Vertex One");
-		Vertex v2 = new DGVertex("Vertex Two");
-		Vertex v3 = new DGVertex("Vertex Three");
-		Vertex v4 = new DGVertex("Vertex Four");
-		Vertex v5 = new DGVertex("Vertex Five");
-		Vertex v6 = new DGVertex("Vertex Six");
-		Vertex v7 = new DGVertex("Vertex Seven");
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
+		Vertex v2 = new DirectedGraphVertex("Vertex Two");
+		Vertex v3 = new DirectedGraphVertex("Vertex Three");
+		Vertex v4 = new DirectedGraphVertex("Vertex Four");
+		Vertex v5 = new DirectedGraphVertex("Vertex Five");
+		Vertex v6 = new DirectedGraphVertex("Vertex Six");
+		Vertex v7 = new DirectedGraphVertex("Vertex Seven");
 		
 		graph.addVertex(v1);
 		graph.addVertex(v2);
@@ -385,5 +417,92 @@ public class DirectedGraphsTests {
 		assertEquals(true, list.get(0).equals(v1) || list.get(0).equals(v2));
 		assertEquals(true, list.get(5).equals(v5) || list.get(5).equals(v6));
 		assertEquals(true, list.get(6).equals(v7));
+	}
+	
+	/* Verifica se, ao remover um vértice conectado com os outros, suas ligações são rompidas. */
+	@org.junit.Test
+	public void removeAVertexConnectedWithOtherVertices() {
+		Graph graph = new DirectedGraph();
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
+		Vertex v2 = new DirectedGraphVertex("Vertex Two");
+		Vertex v3 = new DirectedGraphVertex("Vertex Three");
+		
+		graph.addVertex(v1);
+		graph.addVertex(v2);
+		graph.addVertex(v3);
+		
+		graph.connect(v1, v1);
+		graph.connect(v1, v2);
+		graph.connect(v1, v3);
+		graph.connect(v2, v3);
+		
+		assertEquals(3, ((DirectedGraphVertex) v1).outdegree());
+		assertEquals(2, ((DirectedGraphVertex) v3).indegree());
+		
+		graph.removeVertex(v2);
+		
+		assertEquals(2, ((DirectedGraphVertex) v1).outdegree());
+		assertEquals(1, ((DirectedGraphVertex) v3).indegree());
+		
+		assertEquals(2, ((DirectedGraphVertex) v1).successors().size());
+		assertEquals(false, ((DirectedGraphVertex) v1).successors().contains(v2));
+		assertEquals(1, ((DirectedGraphVertex) v3).predecessors().size());
+		assertEquals(false, ((DirectedGraphVertex) v3).predecessors().contains(v2));
+	}
+	
+	/* Verificar quando se testa conectar e desconectar um vértice que não faz parte do grafo. */
+	@org.junit.Test
+	public void connectAndDisconnectAVertexThatIsNotPartOfTheGraph() {
+		Graph graph = new DirectedGraph();
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
+		Vertex v2 = new DirectedGraphVertex("Vertex Two");
+		
+		graph.addVertex(v1);
+		
+		assertEquals(0, ((DirectedGraphVertex) v1).outdegree());
+		
+		graph.connect(v1, v2);
+		
+		assertEquals(0, ((DirectedGraphVertex) v1).outdegree());
+		
+		graph.disconnect(v1, v2);
+		
+		assertEquals(0, ((DirectedGraphVertex) v1).outdegree());
+	}
+	
+	/* Verificar o grau dos vértices quando se tenta conectar dois deles já conectados. */
+	@org.junit.Test
+	public void connectTwoVerticesAlreadyConnected() {
+		Graph graph = new DirectedGraph();
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
+		Vertex v2 = new DirectedGraphVertex("Vertex Two");
+		
+		graph.addVertex(v1);
+		graph.addVertex(v2);
+		
+		graph.connect(v1, v2);
+		graph.connect(v1, v2);
+		
+		assertEquals(1, ((DirectedGraphVertex) v1).outdegree());
+		assertEquals(1, ((DirectedGraphVertex) v2).indegree());
+	}
+	
+	/* Verificar se um vértice faz parte de seu fecho transitivo. */
+	@org.junit.Test
+	public void isAVertexPartOfYourTransitiveClosure() {
+		Graph graph = new DirectedGraph();
+		Vertex v0 = new DirectedGraphVertex("Vertex Zero");
+		Vertex v1 = new DirectedGraphVertex("Vertex One");
+		Vertex v2 = new DirectedGraphVertex("Vertex Two");
+		
+		graph.addVertex(v0);
+		graph.addVertex(v1);
+		graph.addVertex(v2);
+		
+		graph.connect(v0, v1);
+		graph.connect(v1, v2);
+		
+		assertEquals(false, ((DirectedGraph) graph).directTransitiveClosure(v1).contains(v1));
+		assertEquals(false, ((DirectedGraph) graph).indirectTransitiveClosure(v1).contains(v1));
 	}
 }

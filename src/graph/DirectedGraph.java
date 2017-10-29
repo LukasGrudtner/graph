@@ -3,10 +3,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-
-import javax.swing.plaf.synth.SynthSeparatorUI;
-
-import vertex.DGVertex;
+import vertex.DirectedGraphVertex;
 import vertex.Vertex;
 
 /*
@@ -18,61 +15,71 @@ public class DirectedGraph extends Graph {
 	public DirectedGraph() {
 		super();
 	}
+	
+	@Override
+	public void removeVertex(Vertex v) {
+		/* Remove as arestas que ligam os vértices predecessores de v ao o próprio vértice v. */
+		Iterator<Vertex> iteratorPredecessors = ((DirectedGraphVertex) v).predecessors().iterator();
+		while (iteratorPredecessors.hasNext())
+			disconnect(iteratorPredecessors.next(), v);
+		
+		/* Remove as arestas que ligam o vértice v com os seus sucessores. */
+		Iterator<Vertex> iteratorSuccessors = ((DirectedGraphVertex) v).successors().iterator();
+		while (iteratorSuccessors.hasNext())
+			disconnect(v, iteratorSuccessors.next());
+		
+		vertices.remove(v);
+	}
 
 	@Override
 	public void connect(Vertex v1, Vertex v2) {
 		
-		/* Incrementa grau de emissão de v1 e adiciona v2 como sucessor. */
-		((DGVertex) v1).incOutdegree();
-		((DGVertex) v1).addSuccessor(v2);
-		
-		/* Incrementa grau de recepção de v2 e adiciona v1 como antecessor. */
-		((DGVertex) v2).incIndegree();
-		((DGVertex) v2).addPredecessor(v1);
+		if (vertices.contains(v1) && vertices.contains(v2)) {
+			((DirectedGraphVertex) v1).addSuccessor(v2);
+			((DirectedGraphVertex) v2).addPredecessor(v1);
+		}
 	}
 
 	@Override
 	public void disconnect(Vertex v1, Vertex v2) {
 		
-		/* Decrementa grau de emissão de v1 e remove v2 como sucessor. */
-		((DGVertex) v1).decOutdegree();
-		((DGVertex) v1).removeSuccessor(v2);
-		
-		/* Decrementa grau de recepção de v2 e remove v1 como antecessor. */
-		((DGVertex) v2).decIndegree();
-		((DGVertex) v2).removePredecessor(v1);
+		/* Remove v2 como sucessor. */
+		((DirectedGraphVertex) v1).removeSuccessor(v2);
+			
+		/* Remove v1 como antecessor. */
+		((DirectedGraphVertex) v2).removePredecessor(v1);
 	}
 	
 	/* Retorna o conjunto de vértices predecessores do vértice v. */
 	public HashSet<Vertex> predecessors(Vertex v) {
-		return ((DGVertex) v).predecessors();
+		return ((DirectedGraphVertex) v).predecessors();
 	}
 	
 	/* Retorna o conjunto de vértices sucessores do vértice v. */
 	public HashSet<Vertex> successors(Vertex v) {
-		return ((DGVertex) v).successors();
+		return ((DirectedGraphVertex) v).successors();
 	}
 	
 	/* Retorna o grau de recepção do vértice v. */
 	public int indegree(Vertex v) {
-		return ((DGVertex) v).indegree();
+		return ((DirectedGraphVertex) v).indegree();
 	}
 	
 	/* Retorna o grau de emissão do vértice v. */
 	public int outdegree(Vertex v) {
-		return ((DGVertex) v).outdegree();
+		return ((DirectedGraphVertex) v).outdegree();
 	}
 
 	@Override
 	public boolean isRegular() {
 		Iterator<Vertex> iterator = vertices.iterator();
 		
-		DGVertex vertex = (DGVertex) this.oneVertex();
+		DirectedGraphVertex vertex = (DirectedGraphVertex) this.oneVertex();
 		int indegree = vertex.indegree();
 		int outdegree = vertex.outdegree();
 		
 		while (iterator.hasNext()) {
-			vertex = (DGVertex) iterator.next();
+			vertex = (DirectedGraphVertex) iterator.next();
 			
 			if ((vertex.indegree() != indegree) ||
 					(vertex.outdegree() != outdegree)) {
@@ -86,10 +93,10 @@ public class DirectedGraph extends Graph {
 	public boolean isComplete() {
 		Iterator<Vertex> iterator = vertices.iterator();
 		
-		DGVertex vertex;
+		DirectedGraphVertex vertex;
 		
 		while (iterator.hasNext()) {
-			vertex = (DGVertex) iterator.next();
+			vertex = (DirectedGraphVertex) iterator.next();
 			
 			if ((vertex.indegree() != (vertices.size()-1)) ||
 					(vertex.outdegree() != (vertices.size()-1))) 
@@ -99,20 +106,20 @@ public class DirectedGraph extends Graph {
 	}
 	
 	/* Retorna um conjunto com todos os vértices que são fecho transitivo direto de um dado vértice v. */
-	public HashSet<Vertex> directTrasitiveClosure(Vertex v) {
+	public HashSet<Vertex> directTransitiveClosure(Vertex v) {
 		HashSet<Vertex> markedVertices = new HashSet<Vertex>();
 		return searchDirectTransitiveClosure(v, markedVertices);
 	}
 	
 	/* Função auxiliar recursiva para encontrar o fecho transitivo direto do vértice v. */
 	private HashSet<Vertex> searchDirectTransitiveClosure(Vertex v, HashSet<Vertex> markedVertices) {
-		Iterator<Vertex> iterator = ((DGVertex) v).successors().iterator();
+		Iterator<Vertex> iterator = ((DirectedGraphVertex) v).successors().iterator();
 		Vertex vertex;
 
 		markedVertices.add(v);		
 		
 		while (iterator.hasNext()) {
-			vertex = (DGVertex) iterator.next();
+			vertex = (DirectedGraphVertex) iterator.next();
 			
 			if (!markedVertices.contains(vertex))
 				searchDirectTransitiveClosure(vertex, markedVertices);
@@ -128,13 +135,13 @@ public class DirectedGraph extends Graph {
 	
 	/* Função auxiliar recursiva para encontrar o fecho transitivo indireto de um dado vértice v. */
 	private HashSet<Vertex> searchIndirectTransitiveClosure(Vertex v, HashSet<Vertex> markedVertices) {
-		Iterator<Vertex> iterator = ((DGVertex) v).predecessors().iterator();
+		Iterator<Vertex> iterator = ((DirectedGraphVertex) v).predecessors().iterator();
 		Vertex vertex;
 		
 		markedVertices.add(v);
 		
 		while (iterator.hasNext()) {
-			vertex = (DGVertex) iterator.next();
+			vertex = (DirectedGraphVertex) iterator.next();
 			
 			if (!markedVertices.contains(vertex))
 				searchIndirectTransitiveClosure(vertex, markedVertices);
@@ -162,7 +169,7 @@ public class DirectedGraph extends Graph {
 		while (iterator.hasNext()) {
 			v = iterator.next();
 			/* Somente vértices fonte */
-			if (((DGVertex) v).predecessors().size() == 0) {
+			if (((DirectedGraphVertex) v).predecessors().size() == 0) {
 				list = searchTopologicalSort(v, list);
 			}
 		}
@@ -174,7 +181,7 @@ public class DirectedGraph extends Graph {
 	
 	/* Função auxiliar recursiva para encontrar a ordenação topológica do grafo. */
 	private ArrayList<Vertex> searchTopologicalSort(Vertex v, ArrayList<Vertex> list) {
-		Iterator<Vertex> iterator = ((DGVertex) v).successors().iterator();
+		Iterator<Vertex> iterator = ((DirectedGraphVertex) v).successors().iterator();
 		Vertex vertex;
 		
 		while (iterator.hasNext()) {

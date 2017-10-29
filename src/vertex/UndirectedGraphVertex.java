@@ -6,12 +6,12 @@ import java.util.HashSet;
  * Implementação de um Vértice para um Grafo Não-Orientado. Herda funções da classe Vértice, porém possui funções características próprias
  * para grafo não-orientados.
  */
-public class UGVertex extends Vertex {
+public class UndirectedGraphVertex extends Vertex {
 	
 	private int degree;						/* Grau do vértice.						*/
 	private HashSet<Vertex> neighborhood;	/* Conjunto dos vértices adjacentes.	*/
 	
-	public UGVertex(Object data) {
+	public UndirectedGraphVertex(Object data) {
 		super(data);
 		degree = 0;
 		neighborhood = new HashSet<Vertex>();
@@ -24,26 +24,27 @@ public class UGVertex extends Vertex {
 	
 	/* Adiciona o vértice v ao conjunto dos vértices adjacentes. */
 	public boolean addNeighbor(Vertex v) {
-		return neighborhood.add(v);
+		if (neighborhood.add(v)) {
+			if (v.equals(this))
+				degree += 2;
+			else
+				degree++;
+			return true;
+		}
+		return false;
 	}
 	
 	/* Remove o vértice v do conjunto dos vértices adjacentes. */
 	public boolean removeNeighbor(Vertex v) {
-		return neighborhood.remove(v);
+		if (neighborhood.remove(v)) {
+			degree--;
+			return true;
+		}
+		return false;
 	}
 	
 	/* Retorna o grau. */
 	public int degree() {
 		return degree;
-	}
-	
-	/* Incrementa em 1 unidade o grau. */
-	public void incDegree() {
-		degree++;
-	}
-	
-	/* Decrementa em 1 unidade o grau. */
-	public void decDegree() {
-		degree--;
 	}
 }
