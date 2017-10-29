@@ -502,7 +502,7 @@ public class DirectedGraphsTests {
 		graph.connect(v0, v1);
 		graph.connect(v1, v2);
 		
-		assertEquals(false, ((DirectedGraph) graph).directTransitiveClosure(v1).contains(v1));
-		assertEquals(false, ((DirectedGraph) graph).indirectTransitiveClosure(v1).contains(v1));
+		assertEquals(true, ((DirectedGraph) graph).directTransitiveClosure(v1).contains(v1));
+		assertEquals(true, ((DirectedGraph) graph).indirectTransitiveClosure(v1).contains(v1));
 	}
 }

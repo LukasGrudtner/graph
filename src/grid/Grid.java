@@ -1,4 +1,4 @@
-package control;
+package grid;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import model.Semester;
 import vertex.DirectedGraphVertex;
 import vertex.Vertex;
 
-public class Control {
+public class Grid {
 	
 	private final static int MAX_WORKLOAD = 30;		/* Carga horária semanal máxima definida para o curso. 	*/
 	private static Graph graph;						/* Grafo utilizado para a aplicação. 					*/
@@ -20,7 +20,7 @@ public class Control {
 	public static void main(String[] args) {
 		createGraph(new DisciplinesNotTaken().getDisciplinesNotTakenSet());
 		ArrayList<Vertex> vertices = ((DirectedGraph) graph).topologicalSort();					/* Lista com a ordenação topológica de vértices do grafo. */
-		ArrayList<Semester> semesters = calculatesSemesters(vertices);							/* Lista de semestres com suas respectivas disciplinas. */
+		ArrayList<Semester> semesters = distributeDisciplinesInSubsequentSemesters(vertices);	/* Lista de semestres com suas respectivas disciplinas. */
 		
 		print(semesters);
 	}
@@ -39,12 +39,12 @@ public class Control {
 		
 		while (iterator.hasNext()) {
 			object = iterator.next();
-			addVertex(object, null, markedObjects);
+			addAndConnectVertices(object, null, markedObjects);
 		}
 	}
 	
 	/* Função auxiliar para inicializar os vértices, adicioná-los no grafo e criar suas conexões. */
-	private static void addVertex(Object prerequisiteDiscipline, Vertex vertexPredecessor, HashSet<Object> markedDisciplines) {
+	private static void addAndConnectVertices(Object prerequisiteDiscipline, Vertex vertexPredecessor, HashSet<Object> markedDisciplines) {
 		Vertex vertex = null;
 		
 		/* Se a disciplina não foi marcada, marque-a. Crie um vértice com a disciplina e o adicione ao grafo. */
@@ -61,7 +61,7 @@ public class Control {
 				Discipline discipline;
 				while (iterator.hasNext()) {
 					discipline = iterator.next();
-					addVertex(discipline, vertex, markedDisciplines);
+					addAndConnectVertices(discipline, vertex, markedDisciplines);
 				}
 			}
 			
@@ -105,7 +105,7 @@ public class Control {
 	}
 	
 	/* Organiza todas as disciplinas em uma lista de semestres ordenados, respeitando as condições de pré-requisitos. */
-	private static ArrayList<Semester> calculatesSemesters(ArrayList<Vertex> topologicalSort) {
+	private static ArrayList<Semester> distributeDisciplinesInSubsequentSemesters(ArrayList<Vertex> topologicalSort) {
 		ArrayList<Semester> semesters = new ArrayList<Semester>();
 		
 		/* Adiciona o semestre inicial e a primeira disciplina da ordenação topológica. */

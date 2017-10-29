@@ -43,11 +43,10 @@ public class DirectedGraph extends Graph {
 	@Override
 	public void disconnect(Vertex v1, Vertex v2) {
 		
-		/* Remove v2 como sucessor. */
-		((DirectedGraphVertex) v1).removeSuccessor(v2);
-			
-		/* Remove v1 como antecessor. */
-		((DirectedGraphVertex) v2).removePredecessor(v1);
+		if (((DirectedGraphVertex) v1).successors().contains(v2) && ((DirectedGraphVertex) v2).predecessors().contains(v1)) {
+			((DirectedGraphVertex) v1).removeSuccessor(v2);
+			((DirectedGraphVertex) v2).removePredecessor(v1);
+		}
 	}
 	
 	/* Retorna o conjunto de vértices predecessores do vértice v. */

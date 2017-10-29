@@ -3,7 +3,7 @@ package vertex;
 import java.util.HashSet;
 
 /*
- * Implementação de um Vértice para um Grafo Não-Orientado. Herda funções da classe Vértice, porém possui funções características próprias
+ * Implementação de um Vértice para Grafos Não-Orientados. Herda funções da classe Vértice, porém possui funções características próprias
  * para grafo não-orientados.
  */
 public class UndirectedGraphVertex extends Vertex {
